@@ -5,7 +5,7 @@ class MessagesController < ApplicationController
   def index
     @messages = Message.all
     puts "accessed messages"
-    createLog 'messages accessed', 'acess', 'report'
+    createLog 1, 'access', 'report'
     json_response(@messages)
   end
 
