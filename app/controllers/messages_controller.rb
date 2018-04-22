@@ -3,16 +3,18 @@ class MessagesController < ApplicationController
 
   # GET /messages
   def index
-    @messages = Message.all
-    puts "accessed messages"
-    createLog 1, 'access', 'report'
+    
+    if params[:limit] == nil || params[:limit].to_i < 0
+      @messages = Message.all.order(created_at: :desc)
+    else
+      @messages = Message.order(created_at: :desc).limit(params[:limit])
+    end
     json_response(@messages)
   end
 
   # POST /messages
   def create
     @message = Message.create!(message_params)
-    puts "created message"
     json_response(@message, :created)
   end
 
