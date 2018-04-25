@@ -4,6 +4,9 @@ RSpec.describe 'Messages API', type: :request do
   # initialize test data 
   let!(:messages) { create_list(:message, 10) }
   let(:message_id) { messages.first.id }
+  let(:message_keyword) { messages.first.keyword }
+  let(:message_channel) { messages.first.channel }
+  let(:message_direction) { messages.first.direction }
 
   # Test suite for GET /messages
   describe 'GET /messages' do
@@ -13,13 +16,120 @@ RSpec.describe 'Messages API', type: :request do
     it 'returns messages' do
       # Note `json` is a custom helper to parse JSON responses
       expect(json).not_to be_empty
-      expect(json.size).to eq(10)
+      expect(json['count']).to eq(10)
+      expect(json['messages'].size).to eq(10)
     end
 
     it 'returns status code 200' do
       expect(response).to have_http_status(200)
     end
   end
+
+  # Test suite for GET /messages?keyword=
+  describe 'GET /messages?keyword=xxx' do
+    # make HTTP get request before each example
+    before { get "/messages?keyword=#{message_keyword}" }
+
+    it 'returns messages' do
+      # Note `json` is a custom helper to parse JSON responses
+      expect(json).not_to be_empty
+      expect(json['count']).to eq json['messages'].size
+      expect(json['messages'].size).to be >= 1
+      expect(json['messages'].size).to be < 10
+    end
+
+    it 'returns status code 200' do
+      expect(response).to have_http_status(200)
+    end
+  end
+
+  # Test suite for GET /messages?keyword=
+  describe 'GET /messages?channel=xxx' do
+    # make HTTP get request before each example
+    before { get "/messages?channel=#{message_channel}" }
+
+    it 'returns messages' do
+      # Note `json` is a custom helper to parse JSON responses
+      expect(json).not_to be_empty
+      expect(json['count']).to eq json['messages'].size
+      expect(json['messages'].size).to be >= 1
+      expect(json['messages'].size).to be < 10
+    end
+
+    it 'returns status code 200' do
+      expect(response).to have_http_status(200)
+    end
+  end
+
+  # Test suite for GET /messages?keyword=
+  describe 'GET /messages?direction=xxx' do
+    # make HTTP get request before each example
+    before { get "/messages?direction=#{message_direction}" }
+
+    it 'returns messages' do
+      # Note `json` is a custom helper to parse JSON responses
+      expect(json).not_to be_empty
+      expect(json['count']).to eq json['messages'].size
+      expect(json['messages'].size).to be >= 1
+      expect(json['messages'].size).to be < 10
+    end
+
+    it 'returns status code 200' do
+      expect(response).to have_http_status(200)
+    end
+  end
+
+  # Test suite for GET /messages?limit=
+  describe 'GET /messages?duration=30' do
+    # make HTTP get request before each example
+    before { get '/messages?duration=3' }
+
+    it 'returns messages' do
+      # Note `json` is a custom helper to parse JSON responses
+      expect(json).not_to be_empty
+      expect(json['count']).to eq(10)
+      puts json['messages']
+      expect(json['messages'].size).to eq(0)
+    end
+
+    it 'returns status code 200' do
+      expect(response).to have_http_status(200)
+    end
+  end
+
+# Test suite for GET /messages?limit=
+  describe 'GET /messages?duration=5000' do
+    # make HTTP get request before each example
+    before { get '/messages?duration=5000' }
+
+    it 'returns messages' do
+      # Note `json` is a custom helper to parse JSON responses
+      expect(json).not_to be_empty
+      expect(json['count']).to eq(10)
+      expect(json['messages'].size).to eq(10)
+    end
+
+    it 'returns status code 200' do
+      expect(response).to have_http_status(200)
+    end
+  end
+
+   # Test suite for GET /messages?limit=
+  describe 'GET /messages?limit=5' do
+    # make HTTP get request before each example
+    before { get '/messages?limit=5' }
+
+    it 'returns messages' do
+      # Note `json` is a custom helper to parse JSON responses
+      expect(json).not_to be_empty
+      expect(json['count']).to eq(10)
+      expect(json['messages'].size).to eq(5)
+    end
+
+    it 'returns status code 200' do
+      expect(response).to have_http_status(200)
+    end
+  end 
 
   # Test suite for GET /messages/:id
   describe 'GET /messages/:id' do
@@ -53,16 +163,27 @@ RSpec.describe 'Messages API', type: :request do
   describe 'POST /messages' do
     # valid payload
     time_now = DateTime.now
-    let(:valid_attributes) { { channel: 'Learn Elm', created_at: time_now, autor: 'Lorem' , content: 'Ipsum'} }
+    let(:valid_attributes) { { 
+      channel: 'Learn Elm', 
+      created_at: time_now, 
+      created_by: 'Lorem' , 
+      content: 'Ipsum', 
+      direction: 'Vorem', 
+      extra: 'Ipra', 
+      keyword: 'Aris'
+      } }
 
     context 'when the request is valid' do
       before { post '/messages', params: valid_attributes }
 
       it 'creates a message' do
-        #expect(json['channel']).to eq('Learn Elm')
+        expect(json['channel']).to eq('Learn Elm')
         expect(json['created_at'].to_time).to eq(time_now.to_s.to_time)
-        expect(json['autor']).to eq('Lorem')
+        expect(json['created_by']).to eq('Lorem')
         expect(json['content']).to eq('Ipsum')
+        expect(json['direction']).to eq('Vorem')
+        expect(json['extra']).to eq('Ipra')
+        expect(json['keyword']).to eq('Aris')
       end
 
       it 'returns status code 201' do
@@ -71,7 +192,15 @@ RSpec.describe 'Messages API', type: :request do
     end
 
     context 'when the request is invalid' do
-      before { post '/messages', params: { autor: 'Foobar', channel: 'Barfoo', created_at: DateTime.now } }
+      before { post '/messages', params: { 
+        channel: 'Learn Elm', 
+        created_at: DateTime.now, 
+        created_by: 'Lorem' , 
+        # content: 'Ipsum', 
+        direction: 'Vorem', 
+        extra: 'Ipra', 
+        keyword: 'Aris'
+      } }
 
       it 'returns status code 422' do
         expect(response).to have_http_status(422)

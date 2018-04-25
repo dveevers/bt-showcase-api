@@ -3,13 +3,26 @@ class MessagesController < ApplicationController
 
   # GET /messages
   def index
+
+    @messages = Message.all
     
-    if params[:limit] == nil || params[:limit].to_i < 0
-      @messages = Message.all.order(created_at: :desc)
-    else
-      @messages = Message.order(created_at: :desc).limit(params[:limit])
-    end
-    json_response(@messages)
+    @messages = @messages.where('keyword' => params[:keyword]) unless params[:keyword] == nil
+    @messages = @messages.where('direction' => params[:direction]) unless params[:direction] == nil
+    @messages = @messages.where('created_by' => params[:created_by]) unless params[:created_by] == nil
+    @messages = @messages.where('channel' => params[:channel]) unless params[:channel] == nil
+
+    @count = @messages.count
+
+    @messages = @messages.where('created_at >= ?', params[:duration].to_i.minutes.ago) unless params[:duration] == nil || params[:duration].to_i < 0  
+    @messages = @messages.limit(params[:limit]) unless params[:limit] == nil || params[:limit].to_i < 0
+
+    @messages = @messages.order(created_at: :desc)
+    json_response(
+      {
+        'count': @count,
+        'messages': @messages
+      }
+    )
   end
 
   # POST /messages
@@ -39,7 +52,7 @@ class MessagesController < ApplicationController
 
   def message_params
     # whitelist params
-    params.permit(:channel, :created_at, :content, :autor)
+    params.permit(:channel, :created_at, :content, :created_by, :direction, :keyword, :extra)
   end
 
   def set_message

@@ -10,14 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_04_20_233842) do
+ActiveRecord::Schema.define(version: 2018_04_25_075037) do
 
   create_table "messages", force: :cascade do |t|
     t.string "channel"
     t.datetime "created_at", null: false
     t.string "content"
+    t.string "keyword"
+    t.string "created_by"
+    t.string "direction"
+    t.string "extra"
     t.datetime "updated_at", null: false
-    t.string "autor"
   end
 
 end
