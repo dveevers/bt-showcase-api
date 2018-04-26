@@ -1,0 +1,168 @@
+{
+  "apiVersion": "1.0",
+  "swaggerVersion": "1.2",
+  "basePath": "http://localhost:3000",
+  "resourcePath": "messages",
+  "apis": [
+    {
+      "path": "/api/v1/messages",
+      "operations": [
+        {
+          "summary": "Get all messages with flexible filters",
+          "notes": "Retrieves all the messages, additionnal filters can be applied. Exception made of Duration and Limit, all the others filters impact the number of total result",
+          "parameters": [
+            {
+              "paramType": "query",
+              "name": "duration",
+              "type": "integer",
+              "description": "Retrieve the messages created over the last X minutes",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "limit",
+              "type": "string",
+              "description": "Limit the number of result",
+              "required": false
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": "Message",
+              "message": "Success"
+            }
+          ],
+          "nickname": "Api::V1::Messages#index",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/api/v1/messages",
+      "operations": [
+        {
+          "summary": "To create a message",
+          "notes": "Implementation notes, such as required params, example queries for apis are written here.",
+          "parameters": [
+            {
+              "paramType": "form",
+              "name": "channel",
+              "type": "string",
+              "description": "Channel of the communication",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "content",
+              "type": "string",
+              "description": "Content of the communication",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "direction",
+              "type": "string",
+              "description": "direction of the communication",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "keyword",
+              "type": "string",
+              "description": "keyword of the communication",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "created_by",
+              "type": "string",
+              "description": "created_by of the communication",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "created_at",
+              "type": "datetime",
+              "description": "created_at of the communication",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "extra",
+              "type": "string",
+              "description": "extra bit of the communication",
+              "required": false
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 201,
+              "responseModel": null,
+              "message": "Created"
+            },
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
+            },
+            {
+              "code": 500,
+              "responseModel": null,
+              "message": "Internal Error"
+            }
+          ],
+          "nickname": "Api::V1::Messages#create",
+          "method": "post"
+        }
+      ]
+    }
+  ],
+  "authorizations": null,
+  "models": {
+    "Message": {
+      "id": "Message",
+      "required": [
+        "channel",
+        "content",
+        "created_by",
+        "direction"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Message Id"
+        },
+        "channel": {
+          "type": "string",
+          "description": "Channel used"
+        },
+        "content": {
+          "type": "string",
+          "description": "Content of the message"
+        },
+        "createdAt": {
+          "type": "datetime",
+          "description": "Creation time"
+        },
+        "createdBy": {
+          "type": "datetime",
+          "description": "Author"
+        },
+        "direction": {
+          "type": "string",
+          "description": "Inbound/outbound"
+        },
+        "keyword": {
+          "type": "string",
+          "description": "Keyword if any"
+        },
+        "extra": {
+          "type": "string",
+          "description": "Extra information"
+        }
+      },
+      "description": "A Message object."
+    }
+  }
+}
