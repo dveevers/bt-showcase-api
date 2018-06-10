@@ -8,10 +8,10 @@ RSpec.describe 'Messages API', type: :request do
   let(:message_channel) { messages.first.channel }
   let(:message_direction) { messages.first.direction }
 
-  # Test suite for GET /messages
-  describe 'GET /messages' do
+  # Test suite for GET /api/v1/messages
+  describe 'GET /api/v1/messages' do
     # make HTTP get request before each example
-    before { get '/messages' }
+    before { get '/api/v1/messages' }
 
     it 'returns messages' do
       # Note `json` is a custom helper to parse JSON responses
@@ -25,10 +25,10 @@ RSpec.describe 'Messages API', type: :request do
     end
   end
 
-  # Test suite for GET /messages?keyword=
-  describe 'GET /messages?keyword=xxx' do
+  # Test suite for GET /api/v1/messages?keyword=
+  describe 'GET /api/v1/messages?keyword=xxx' do
     # make HTTP get request before each example
-    before { get "/messages?keyword=#{message_keyword}" }
+    before { get "/api/v1/messages?keyword=#{message_keyword}" }
 
     it 'returns messages' do
       # Note `json` is a custom helper to parse JSON responses
@@ -43,10 +43,10 @@ RSpec.describe 'Messages API', type: :request do
     end
   end
 
-  # Test suite for GET /messages?keyword=
-  describe 'GET /messages?channel=xxx' do
+  # Test suite for GET /api/v1/messages?keyword=
+  describe 'GET /api/v1/messages?channel=xxx' do
     # make HTTP get request before each example
-    before { get "/messages?channel=#{message_channel}" }
+    before { get "/api/v1/messages?channel=#{message_channel}" }
 
     it 'returns messages' do
       # Note `json` is a custom helper to parse JSON responses
@@ -61,10 +61,10 @@ RSpec.describe 'Messages API', type: :request do
     end
   end
 
-  # Test suite for GET /messages?keyword=
-  describe 'GET /messages?direction=xxx' do
+  # Test suite for GET /api/v1/messages?keyword=
+  describe 'GET /api/v1/messages?direction=xxx' do
     # make HTTP get request before each example
-    before { get "/messages?direction=#{message_direction}" }
+    before { get "/api/v1/messages?direction=#{message_direction}" }
 
     it 'returns messages' do
       # Note `json` is a custom helper to parse JSON responses
@@ -79,10 +79,10 @@ RSpec.describe 'Messages API', type: :request do
     end
   end
 
-  # Test suite for GET /messages?limit=
-  describe 'GET /messages?duration=30' do
+  # Test suite for GET /api/v1/messages?limit=
+  describe 'GET /api/v1/messages?duration=30' do
     # make HTTP get request before each example
-    before { get '/messages?duration=3' }
+    before { get '/api/v1/messages?duration=3' }
 
     it 'returns messages' do
       # Note `json` is a custom helper to parse JSON responses
@@ -97,10 +97,10 @@ RSpec.describe 'Messages API', type: :request do
     end
   end
 
-# Test suite for GET /messages?limit=
-  describe 'GET /messages?duration=5000' do
+# Test suite for GET /api/v1/messages?limit=
+  describe 'GET /api/v1/messages?duration=5000' do
     # make HTTP get request before each example
-    before { get '/messages?duration=5000' }
+    before { get '/api/v1/messages?duration=5000' }
 
     it 'returns messages' do
       # Note `json` is a custom helper to parse JSON responses
@@ -114,10 +114,10 @@ RSpec.describe 'Messages API', type: :request do
     end
   end
 
-   # Test suite for GET /messages?limit=
-  describe 'GET /messages?limit=5' do
+   # Test suite for GET /api/v1/messages?limit=
+  describe 'GET /api/v1/messages?limit=5' do
     # make HTTP get request before each example
-    before { get '/messages?limit=5' }
+    before { get '/api/v1/messages?limit=5' }
 
     it 'returns messages' do
       # Note `json` is a custom helper to parse JSON responses
@@ -131,9 +131,9 @@ RSpec.describe 'Messages API', type: :request do
     end
   end 
 
-  # Test suite for GET /messages/:id
-  describe 'GET /messages/:id' do
-    before { get "/messages/#{message_id}" }
+  # Test suite for GET /api/v1/messages/:id
+  describe 'GET /api/v1/messages/:id' do
+    before { get "/api/v1/messages/#{message_id}" }
 
     context 'when the record exists' do
       it 'returns the message' do
@@ -159,8 +159,8 @@ RSpec.describe 'Messages API', type: :request do
     end
   end
 
-  # Test suite for POST /messages
-  describe 'POST /messages' do
+  # Test suite for POST /api/v1/messages
+  describe 'POST /api/v1/messages' do
     # valid payload
     time_now = DateTime.now
     let(:valid_attributes) { { 
@@ -174,7 +174,7 @@ RSpec.describe 'Messages API', type: :request do
       } }
 
     context 'when the request is valid' do
-      before { post '/messages', params: valid_attributes }
+      before { post '/api/v1/messages', params: valid_attributes }
 
       it 'creates a message' do
         expect(json['channel']).to eq('Learn Elm')
@@ -192,7 +192,7 @@ RSpec.describe 'Messages API', type: :request do
     end
 
     context 'when the request is invalid' do
-      before { post '/messages', params: { 
+      before { post '/api/v1/messages', params: { 
         channel: 'Learn Elm', 
         created_at: DateTime.now, 
         created_by: 'Lorem' , 
@@ -213,12 +213,12 @@ RSpec.describe 'Messages API', type: :request do
     end
   end
 
-  # Test suite for PUT /messages/:id
-  describe 'PUT /messages/:id' do
+  # Test suite for PUT /api/v1/messages/:id
+  describe 'PUT /api/v1/messages/:id' do
     let(:valid_attributes) { { content: 'Shopping' } }
 
     context 'when the record exists' do
-      before { put "/messages/#{message_id}", params: valid_attributes }
+      before { put "/api/v1/messages/#{message_id}", params: valid_attributes }
 
       it 'updates the record' do
         expect(response.body).to be_empty
@@ -230,9 +230,9 @@ RSpec.describe 'Messages API', type: :request do
     end
   end
 
-  # Test suite for DELETE /messages/:id
-  describe 'DELETE /messages/:id' do
-    before { delete "/messages/#{message_id}" }
+  # Test suite for DELETE /api/v1/messages/:id
+  describe 'DELETE /api/v1/messages/:id' do
+    before { delete "/api/v1/messages/#{message_id}" }
 
     it 'returns status code 204' do
       expect(response).to have_http_status(204)
