@@ -9,8 +9,43 @@
       "operations": [
         {
           "summary": "Get all messages with flexible filters",
-          "notes": "Retrieves all the messages, additionnal filters can be applied. Exception made of Duration and Limit, all the others filters impact the number of total result",
+          "notes": "Retrieves all the messages, additionnal filters can be applied.</br>\n          Filters are additive and will impact the number of results retrieved.</br>\n          Exception made of <b>Duration</b> and <b>Limit</b>, which will only impact the list of messages returned (for loading time)",
           "parameters": [
+            {
+              "paramType": "query",
+              "name": "keyword",
+              "type": "string",
+              "description": "Filter by keyword",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "keywords",
+              "type": "string",
+              "description": "Filter by keywords (coma separated)",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "channel",
+              "type": "string",
+              "description": "Filter by channel",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "channels",
+              "type": "string",
+              "description": "Filter by channels (coma separated)",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "direction",
+              "type": "string",
+              "description": "Filter by direction",
+              "required": false
+            },
             {
               "paramType": "query",
               "name": "duration",
@@ -29,8 +64,13 @@
           "responseMessages": [
             {
               "code": 200,
-              "responseModel": "Message",
+              "responseModel": "Messages",
               "message": "Success"
+            },
+            {
+              "code": 500,
+              "responseModel": null,
+              "message": "Internal Error"
             }
           ],
           "nickname": "Api::V1::Messages#index",
@@ -43,6 +83,85 @@
       "operations": [
         {
           "summary": "To create a message",
+          "notes": "Create a new message to be storedd.",
+          "parameters": [
+            {
+              "paramType": "form",
+              "name": "channel",
+              "type": "string",
+              "description": "Channel of the communication",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "content",
+              "type": "string",
+              "description": "Content of the communication",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "direction",
+              "type": "string",
+              "description": "direction of the communication",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "keyword",
+              "type": "string",
+              "description": "keyword of the communication",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "created_by",
+              "type": "string",
+              "description": "created_by of the communication",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "created_at",
+              "type": "datetime",
+              "description": "created_at of the communication",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "extra",
+              "type": "string",
+              "description": "extra bit of unstructured information",
+              "required": false
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 201,
+              "responseModel": null,
+              "message": "Created"
+            },
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
+            },
+            {
+              "code": 500,
+              "responseModel": null,
+              "message": "Internal Error"
+            }
+          ],
+          "nickname": "Api::V1::Messages#create",
+          "method": "post"
+        }
+      ]
+    },
+    {
+      "path": "/api/v1/messages/{id}",
+      "operations": [
+        {
+          "summary": "To fetch a message",
           "notes": "Implementation notes, such as required params, example queries for apis are written here.",
           "parameters": [
             {
@@ -91,20 +210,15 @@
               "paramType": "form",
               "name": "extra",
               "type": "string",
-              "description": "extra bit of the communication",
+              "description": "extra bit of unstructured information",
               "required": false
             }
           ],
           "responseMessages": [
             {
-              "code": 201,
-              "responseModel": null,
-              "message": "Created"
-            },
-            {
-              "code": 422,
-              "responseModel": null,
-              "message": "Unprocessable Entity"
+              "code": 200,
+              "responseModel": "Messages",
+              "message": "Success"
             },
             {
               "code": 500,
@@ -112,14 +226,38 @@
               "message": "Internal Error"
             }
           ],
-          "nickname": "Api::V1::Messages#create",
-          "method": "post"
+          "nickname": "Api::V1::Messages#show",
+          "method": "get"
         }
       ]
     }
   ],
   "authorizations": null,
   "models": {
+    "Messages": {
+      "id": "Messages",
+      "required": [
+        "count",
+        "messages"
+      ],
+      "properties": {
+        "count": {
+          "type": "integer",
+          "description": "Number of messages matching the filters"
+        },
+        "messages": {
+          "type": "Message",
+          "description": "Lists of messages matching the filters (+ duration/linit)",
+          "allowableValues": {
+            "valueType": "LIST",
+            "values": [
+
+            ]
+          }
+        }
+      },
+      "description": "A Message object."
+    },
     "Message": {
       "id": "Message",
       "required": [
