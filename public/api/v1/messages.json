@@ -247,7 +247,7 @@
         },
         "messages": {
           "type": "Message",
-          "description": "Lists of messages matching the filters (+ duration/linit)",
+          "description": "List of messages matching the filters (+ duration/linit)",
           "allowableValues": {
             "valueType": "LIST",
             "values": [
